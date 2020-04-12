@@ -20,29 +20,26 @@ function _default(_ref) {
         const maxDepth = parseInt(options.opts.maxDepth) ? parseInt(options.opts.maxDepth) : null;
 
         if (isLogger(path, loggers)) {
-          var description = [];
+          if (!path.node.arguments.length) return;
+          let relativePath;
+          let filePath = this.file.opts.filename;
 
-          for (let expression of path.node.arguments) {
-            if (description.length === 0) {
-              let relativePath;
-              let filePath = this.file.opts.filename;
-
-              if (filePath.charAt(0) !== '/') {
-                relativePath = filePath;
-              } else {
-                let cwd = process.cwd();
-                relativePath = filePath.substring(cwd.length + 1);
-              }
-
-              let line = expression.loc.start.line;
-              let column = expression.loc.start.column;
-              description.push("".concat(parseRelativePath(relativePath, maxDepth), ":").concat(line, ":").concat(column, ":").concat(this.file.code.substring(expression.start, expression.end)));
-            } else {
-              description.push(this.file.code.substring(expression.start, expression.end));
-            }
+          if (filePath.charAt(0) !== '/') {
+            relativePath = filePath;
+          } else {
+            let cwd = process.cwd();
+            relativePath = filePath.substring(cwd.length + 1);
           }
 
-          path.node.arguments.unshift(t.stringLiteral(description.join(',')));
+          const line = path.node.arguments[0].loc.start.line;
+          let description = ["%c ".concat(parseRelativePath(relativePath, maxDepth), ":").concat(line, " %c ")];
+          description[0] += path.node.arguments.map(expression => {
+            return this.file.code.substring(expression.start, expression.end);
+          }).join(' ,') + ' ';
+          description.push('color: black; background-color: #ffd700');
+          description.push('color: white; background-color: #111111');
+          description.push('\n');
+          path.node.arguments = description.map(x => t.stringLiteral(x)).concat(path.node.arguments);
         }
       }
 
