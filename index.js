@@ -20,7 +20,7 @@ export default function ({ types: t }) {
           let description = [`%c ${parseRelativePath(relativePath, maxDepth)}:${line} %c `]
           description[0] += path.node.arguments.map(expression => {
             return this.file.code.substring(expression.start, expression.end)
-          }).join(' ,') + ' '
+          }).join(', ') + ' '
           description.push('color: black; background-color: #ffd700')
           description.push('color: white; background-color: #111111')
           description.push('\n')
