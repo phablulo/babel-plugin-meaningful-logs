@@ -31,6 +31,7 @@ function _default(_ref) {
             relativePath = filePath.substring(cwd.length + 1);
           }
 
+          if (!path.node.arguments[0].loc) return;
           const line = path.node.arguments[0].loc.start.line;
           let description = ["%c ".concat(parseRelativePath(relativePath, maxDepth), ":").concat(line, " %c ")];
           description[0] += path.node.arguments.map(expression => {

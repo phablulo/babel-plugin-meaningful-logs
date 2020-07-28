@@ -16,6 +16,7 @@ export default function ({ types: t }) {
             let cwd = process.cwd()
             relativePath = filePath.substring(cwd.length + 1)
           }
+          if (!path.node.arguments[0].loc) return;
           const line = path.node.arguments[0].loc.start.line
           let description = [`%c ${parseRelativePath(relativePath, maxDepth)}:${line} %c `]
           description[0] += path.node.arguments.map(expression => {
